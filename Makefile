@@ -54,8 +54,6 @@ fmt:
 	@echo "+ $@"
 	@test -z "$$(gofmt -s -l . | grep -v vendor/ | grep -v ".pb.go$$" | tee /dev/stderr)" || \
 		(echo "+ please format Go code with 'gofmt -s'" && false)
-	@test -z "$$(find . -path ./vendor -prune -o -name '*.proto' -type f -exec grep -Hn -e "^ " {} \; | tee /dev/stderr)" || \
-		(echo "+ please indent proto files with tabs only" && false)
 	@test -z "$$(find . -path ./vendor -prune -o -name '*.proto' -type f -exec grep -Hn "id = " {} \; | grep -v gogoproto.customname | tee /dev/stderr)" || \
 		(echo "+ id fields in proto files must have a gogoproto.customname set" && false)
 
@@ -78,7 +76,7 @@ clean:
 	@echo "+ $@"
 	@rm -rf "${PREFIX}/bin/swarmctl" "${PREFIX}/bin/swarmd" "${PREFIX}/bin/protoc-gen-gogoswarm"
 
-coverage: 
+coverage:
 	@echo "+ $@"
 	@for pkg in ${PACKAGES}; do \
 		go test -tags "${DOCKER_BUILDTAGS}" -test.short -coverprofile="../../../$$pkg/coverage.txt" -covermode=count $$pkg; \

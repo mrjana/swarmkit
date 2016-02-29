@@ -10,6 +10,10 @@ import math "math"
 import _ "github.com/gogo/protobuf/gogoproto"
 
 import (
+	"github.com/docker/swarm-v2/state/raw"
+)
+
+import (
 	context "golang.org/x/net/context"
 	grpc "google.golang.org/grpc"
 )
@@ -18,6 +22,8 @@ import (
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
+
+var _ raw.Store
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context

@@ -1,0 +1,13 @@
+syntax = "proto2";
+
+package dataaccess;
+
+import "google/protobuf/descriptor.proto";
+
+extend google.protobuf.MessageOptions {
+  optional bool model = 66001;
+}
+
+extend google.protobuf.FieldOptions {
+  optional bool primarykey = 66001;
+}

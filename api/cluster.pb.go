@@ -9,6 +9,10 @@ import fmt "fmt"
 import math "math"
 import _ "github.com/gogo/protobuf/gogoproto"
 
+import (
+	"github.com/docker/swarm-v2/state/raw"
+)
+
 import strings "strings"
 import github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
 import sort "sort"
@@ -248,6 +252,9 @@ func init() {
 	proto.RegisterType((*ListNetworksRequest)(nil), "api.ListNetworksRequest")
 	proto.RegisterType((*ListNetworksResponse)(nil), "api.ListNetworksResponse")
 }
+
+var _ raw.Store
+
 func (this *ListNodesRequest) GoString() string {
 	if this == nil {
 		return "nil"

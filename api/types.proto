@@ -5,6 +5,7 @@ package api;
 // NOTE(stevvooe): Make sure your gopath is appropriately set for this to work
 // correctly.
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "github.com/docker/swarm-v2/cmd/protoc-gen-gogoswarm/plugin/dataaccess.proto";
 
 // Meta is common to all API objects types.
 message Meta {
@@ -15,8 +16,10 @@ message Meta {
 }
 
 message Node {
+	option (dataaccess.model) = true;
+
 	Meta meta = 1;
-	string id = 2 [(gogoproto.customname) = "ID"];
+	string id = 2 [(gogoproto.customname) = "ID", (dataaccess.primarykey) = true];
 	string ip = 3 [(gogoproto.customname) = "IP"];
 
 	NodeStatus status = 4;
@@ -27,7 +30,7 @@ message Node {
 
 enum NodeStatus {
 	UNKNOWN = 0;
-	DOWN = 1; 
+	DOWN = 1;
 	READY = 2;
 	DRAINED = 3; // needs differentation of desired and observed state.
 }
@@ -63,13 +66,13 @@ message ImageSpec {
 // used to the schedule and run the target with a cluster.
 message JobSpec {
 	Meta meta = 1;
-	
+
 	message Source { // TODO(stevvooe): better name?
 		oneof source {
 			ImageSpec image = 1;
 		}
 	}
-	
+
 	message ServiceJob {
 		int64 instances = 1;
 	}
@@ -93,7 +96,7 @@ message JobSpec {
 			CronJob cron = 4;
 		}
 	}
-	
+
 	Source source = 2;
 	Orchestration orchestration = 3;
 
@@ -136,7 +139,8 @@ message TaskStatus {
 // immutable and idempotent. Once it is dispatched to a node, it will not be
 // dispatched to another node.
 message Task {
-	string id = 1 [(gogoproto.customname) = "ID"];
+	option (dataaccess.model) = true;
+	string id = 1 [(gogoproto.customname) = "ID", (dataaccess.primarykey) = true];
 	Meta meta = 2;
 	string job_id = 3 [(gogoproto.customname) = "JobID"];
 
@@ -158,7 +162,9 @@ message Task {
 }
 
 message Job {
-	string id = 1 [(gogoproto.customname) = "ID"];
+	option (dataaccess.model) = true;
+
+	string id = 1 [(gogoproto.customname) = "ID", (dataaccess.primarykey) = true];
 	Meta meta = 2;
 	JobSpec spec = 3;
 }
@@ -180,7 +186,7 @@ message IPAMConfiguration {
 
 	// Gateway address within the subnet.
 	string gateway = 3;
-	
+
 	// Reserved is a list of address from the master pool that should *not* be
 	// allocated. These addresses may have already been allocated or may be
 	// reserved for another allocation manager.
@@ -223,4 +229,3 @@ message Network {
 	string id = 1 [(gogoproto.customname) = "ID"];
 	NetworkSpec spec = 2;
 }
-

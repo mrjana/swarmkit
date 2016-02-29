@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "github.com/docker/swarm-v2/cmd/protoc-gen-gogoswarm/plugin"
 	"github.com/gogo/protobuf/protoc-gen-gogo/descriptor"
 	"github.com/gogo/protobuf/vanity"
 	"github.com/gogo/protobuf/vanity/command"

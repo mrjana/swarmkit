@@ -71,6 +71,11 @@ import proto "github.com/gogo/protobuf/proto"
 import fmt "fmt"
 import math "math"
 import _ "github.com/gogo/protobuf/gogoproto"
+import _ "github.com/docker/swarm-v2/cmd/protoc-gen-gogoswarm/plugin"
+
+import (
+	"github.com/docker/swarm-v2/state/raw"
+)
 
 import strings "strings"
 import github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
@@ -684,6 +689,136 @@ func init() {
 	proto.RegisterEnum("api.NodeStatus", NodeStatus_name, NodeStatus_value)
 	proto.RegisterEnum("api.TaskStatus_State", TaskStatus_State_name, TaskStatus_State_value)
 }
+
+var _ raw.Store
+
+type NodeBitMap uint32
+
+const (
+	NodemetaBit   NodeBitMap = 1 << 0
+	NodeidBit     NodeBitMap = 1 << 1
+	NodeipBit     NodeBitMap = 1 << 2
+	NodestatusBit NodeBitMap = 1 << 3
+)
+
+func encodeNodeidKeyString(k *Node) string {
+	return "/Node/" + proto.CompactTextString(k)
+}
+
+func encodeNodePrefix() string {
+	return "/Node"
+}
+
+func CreateNode(store raw.Store, id string, o *Node) error {
+	key := encodeNodeidKeyString(&Node{ID: id})
+	return store.CreateObject(key, o)
+}
+
+func DeleteNode(store raw.Store, id string) error {
+	key := encodeNodeidKeyString(&Node{ID: id})
+	return store.DeleteObject(key)
+}
+
+func GetNode(store raw.Store, id string) *Node {
+	key := encodeNodeidKeyString(&Node{ID: id})
+	return store.Object(key).(*Node)
+}
+
+func ListNode(store raw.Store, id string) []*Node {
+	key := encodeNodePrefix()
+	olist := store.ListObjects(key)
+	list := make([]*Node, 0, len(olist))
+	for _, o := range olist {
+		list = append(list, o.(*Node))
+	}
+	return list
+}
+
+type TaskBitMap uint32
+
+const (
+	TaskidBit      TaskBitMap = 1 << 0
+	TaskmetaBit    TaskBitMap = 1 << 1
+	Taskjob_idBit  TaskBitMap = 1 << 2
+	Tasknode_idBit TaskBitMap = 1 << 3
+	TaskspecBit    TaskBitMap = 1 << 4
+	TaskstatusBit  TaskBitMap = 1 << 5
+)
+
+func encodeTaskidKeyString(k *Task) string {
+	return "/Task/" + proto.CompactTextString(k)
+}
+
+func encodeTaskPrefix() string {
+	return "/Task"
+}
+
+func CreateTask(store raw.Store, id string, o *Task) error {
+	key := encodeTaskidKeyString(&Task{ID: id})
+	return store.CreateObject(key, o)
+}
+
+func DeleteTask(store raw.Store, id string) error {
+	key := encodeTaskidKeyString(&Task{ID: id})
+	return store.DeleteObject(key)
+}
+
+func GetTask(store raw.Store, id string) *Task {
+	key := encodeTaskidKeyString(&Task{ID: id})
+	return store.Object(key).(*Task)
+}
+
+func ListTask(store raw.Store, id string) []*Task {
+	key := encodeTaskPrefix()
+	olist := store.ListObjects(key)
+	list := make([]*Task, 0, len(olist))
+	for _, o := range olist {
+		list = append(list, o.(*Task))
+	}
+	return list
+}
+
+type JobBitMap uint32
+
+const (
+	JobidBit   JobBitMap = 1 << 0
+	JobmetaBit JobBitMap = 1 << 1
+	JobspecBit JobBitMap = 1 << 2
+)
+
+func encodeJobidKeyString(k *Job) string {
+	return "/Job/" + proto.CompactTextString(k)
+}
+
+func encodeJobPrefix() string {
+	return "/Job"
+}
+
+func CreateJob(store raw.Store, id string, o *Job) error {
+	key := encodeJobidKeyString(&Job{ID: id})
+	return store.CreateObject(key, o)
+}
+
+func DeleteJob(store raw.Store, id string) error {
+	key := encodeJobidKeyString(&Job{ID: id})
+	return store.DeleteObject(key)
+}
+
+func GetJob(store raw.Store, id string) *Job {
+	key := encodeJobidKeyString(&Job{ID: id})
+	return store.Object(key).(*Job)
+}
+
+func ListJob(store raw.Store, id string) []*Job {
+	key := encodeJobPrefix()
+	olist := store.ListObjects(key)
+	list := make([]*Job, 0, len(olist))
+	for _, o := range olist {
+		list = append(list, o.(*Job))
+	}
+	return list
+}
+
 func (this *Meta) GoString() string {
 	if this == nil {
 		return "nil"

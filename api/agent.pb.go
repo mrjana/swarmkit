@@ -11,6 +11,10 @@ import _ "github.com/gogo/protobuf/gogoproto"
 
 import time "time"
 
+import (
+	"github.com/docker/swarm-v2/state/raw"
+)
+
 import strings "strings"
 import github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
 import sort "sort"
@@ -146,6 +150,9 @@ func init() {
 	proto.RegisterType((*SessionRequest)(nil), "api.SessionRequest")
 	proto.RegisterType((*SessionResponse)(nil), "api.SessionResponse")
 }
+
+var _ raw.Store
+
 func (this *RegisterRequest) GoString() string {
 	if this == nil {
 		return "nil"
